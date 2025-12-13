@@ -1,42 +1,43 @@
---- 
-name: Feature Specification Update / Architectural Revision
-about: Template for submitting changes to the PWA specification document, architecture, or core requirements for the Office Time Tracker PWA.
-title: "[SPEC]: Brief, imperative summary of the specification change"
-labels: specification, needs-review, documentation
-assignees: ''
----
+# Pull Request Template for TimeGuard-Office-Time-Tracker-PWA
 
-## ⚡ Apex Technical Review Mandate
+## Description
+Please provide a detailed description of the changes made in this pull request:
 
-Thank you for contributing to the `OfficeTimeTracker-Progressive-Web-App-Specification`. All Pull Requests must adhere to the high standard set by the Apex Technical Authority. Changes must be justified, traceable, and architecturally sound, focusing on the future implementation's integrity.
+* Briefly explain the purpose of the PR and the changes included.
+* Mention any related issues or PRs.
 
-### 1. Summary & Rationale (BLUF - Bottom Line Up Front)
+## Changes Included
+* List the specific changes, using bullet points for clarity:
+  * Feature additions
+  * Bug fixes
+  * Code improvements
+  * Test additions
 
-*Describe the change introduced in this Pull Request. Why is this modification necessary for the specification, architecture, or requirements, and what problem does it solve for the future development team?*
+## Testing and Verification
+* Specify the testing environment used (e.g., local, CI).
+* Provide steps to reproduce the issue (if applicable) or to test the new feature:
+  1. Step 1
+  2. Step 2
+* Mention any relevant test results or logs.
 
-### 2. Specification Impact & Details
+## Checklist
+* [ ] I have performed a self-review of my code.
+* [ ] I have commented my code, particularly in hard-to-understand areas.
+* [ ] I have made corresponding changes to the documentation (if necessary).
+* [ ] I have added tests for the changes (if applicable).
+* [ ] New and existing unit tests pass with my changes.
 
-*Provide detailed technical context for the changes made to the documentation structure or content.*
+## Commit Message and API Documentation Guidelines
+* Ensure the commit message follows the conventional commit format: type(scope): brief description.
+* If changing API documentation, ensure it adheres to the Apex Technical Authority standards.
 
-- **Files Updated:** 
-- **Affected Feature/Component:** (e.g., Offline Sync Strategy, Timesheet Module Requirements, Security Policy Specification)
-- **Architectural Change:** (If applicable, describe how this impacts the overall PWA architecture or the definition of core services/modules.)
+## Additional Context or Information
+Add any additional context or information that might be helpful for reviewers:
 
-### 3. Specification Integrity Checklist
+* Links to related resources.
+* Screenshots or videos of changes (if visual).
+* Other relevant details.
 
-*Ensure all necessary steps for maintaining specification integrity have been completed.*
-
-- [ ] **Clarity:** All technical language is precise, unambiguous, and adheres to FAANG-level documentation standards.
-- [ ] **Feasibility:** The proposed specification is technologically achievable using the defined stack (TypeScript, Vite, TailwindCSS, and PWA capabilities).
-- [ ] **Traceability:** If this specification relates to a conceptual user story or established requirement, it is properly referenced. (Closes: #XXXX)
-- [ ] **PWA Standards:** The changes comply strictly with critical PWA criteria (Service Worker definition, Manifest configuration, Installability, Performance budgets).
-- [ ] **Readability:** Formatting, markdown, and structure are clean and adhere to the project's documentation style.
-- [ ] **Diagrams:** Any relevant architectural diagrams (Mermaid, ASCII) within the specification have been updated to reflect the change.
-
-### 4. Technical Debt & Open Questions
-
-*Identify any potential future work, areas of ambiguity, or major architectural questions that remain open due to this specification change.*
-
-### 5. Final Approval Block
-
-By submitting this PR, I confirm that I have reviewed the proposed changes against the **AGENTS.md** architectural directives and ensured that this specification update maintains the zero-defect, future-proof standard.
+## Labels and Assignees
+* Suggest relevant labels for this pull request (e.g., bug, feature, docs).
+* Assign the pull request to the appropriate reviewer or team.
