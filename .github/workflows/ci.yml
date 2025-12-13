@@ -1,66 +1,67 @@
-# CI/CD Pipeline for OfficeTimeTracker Specification Repository
-# Philosophy: Zero-Defect, High-Velocity, Future-Proof Documentation & Specification Review
-
-name: Specification Integrity Check
+name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main, develop]
 
-# --- DEFINITIONS ---
-# Since this repository contains only specifications (Markdown, YAML, etc.), 
-# the CI focuses on linting documentation, ensuring badge validity, and confirming
-# the structure adheres to Apex standards.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  validation:
-    name: Documentation & Specification Validation
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
     steps:
-      - name: 1. Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: 2. Setup Node.js (For Documentation Tools/Badges)
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-      - name: 3. Install Documentation/Linting Dependencies
-        # Using common tools suitable for checking Markdown, YAML, and general structure
-        run: npm install -g markdownlint-cli prettier
+      - name: Install dependencies
+        run: npm ci
 
-      - name: 4. Verify README Structure and Badges (Markdown Lint)
-        # We use markdownlint to enforce structural rules, which helps validate the README integrity
-        run: |
-          npx markdownlint-cli --config .github/markdownlint-config.json README.md || echo "Markdown linting failed but continuing..."
-        # Note: A specific .github/markdownlint-config.json would be created during full repo setup to enforce Apex structure.
+      - name: Lint with Biome
+        run: npx biome lint .
 
-      - name: 5. Validate YAML Configuration Files (e.g., badges.yml)
-        uses: docker://yamllint/yamllint
+      - name: Run unit tests with Vitest (with coverage)
+        run: npx vitest run --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          args: ./**/*.yml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/**/*.json
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: 6. Verify Metadata Consistency (Apex Naming)
-        run: |
-          REPO_NAME="OfficeTimeTracker-Progressive-Web-App-Specification"
-          if [[ "$GITHUB_REPOSITORY" != "chirag127/$REPO_NAME" ]]; then
-            echo "::error::Repository name mismatch! Expected chirag127/$REPO_NAME but found $GITHUB_REPOSITORY." ;
-            exit 1;
-          fi
-          # Check for presence of required configuration files (Standard 11 compliance)
-          for file in .github/CONTRIBUTING.md .github/ISSUE_TEMPLATE/bug_report.md .github/PULL_REQUEST_TEMPLATE.md .github/SECURITY.md AGENTS.md;
-do
-            if [ ! -f "$file" ]; then
-              echo "::error::$file is missing. Compliance Failure (Standard 11)."
-              exit 1
-            fi
-          done
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
-      - name: 7. Final Success Notification
-        run: echo "Specification Integrity Check Passed. Structure validated against Apex Standards."
+      - name: Run Playwright end‑to‑end tests
+        run: npx playwright test
 
-# Note: Since the repo is specification-based, traditional 'build' or 'test' steps are replaced 
-# by structural and documentation validation steps.
+      - name: Build the PWA (Vite)
+        run: npm run build
+
+      - name: Package Tauri application
+        if: success()
+        run: npm run tauri build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: timeguard-build
+          path: |
+            dist/**
+            src-tauri/target/release/**
