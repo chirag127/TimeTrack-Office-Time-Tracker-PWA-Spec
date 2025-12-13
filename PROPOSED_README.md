@@ -1,243 +1,140 @@
-# OfficeTime-Workforce-Tracker-PWA-Specification
+# TimeGuard Office Time Tracker PWA
 
-![OfficeTime Banner](https://via.placeholder.com/1200x250/007bff/ffffff?text=OfficeTime+Workforce+Tracker+PWA+Specification)
+[![Build Status](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA/actions/workflows/ci.yml/badge.svg?branch=main&style=flat-square)](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA/actions) [![Coverage Status](https://codecov.io/gh/chirag127/TimeGuard-Office-Time-Tracker-PWA/branch/main/graph/badge.svg?style=flat-square)](https://codecov.io/gh/chirag127/TimeGuard-Office-Time-Tracker-PWA) [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue?style=flat-square)](https://www.typescriptlang.org/) [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=flat-square)](https://vitejs.dev/) [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=flat-square)](https://tailwindcss.com/) [![Tauri](https://img.shields.io/badge/Tauri-2.0-FFC107?style=flat-square)](https://tauri.app/) [![Biome](https://img.shields.io/badge/Biome-1.9-5A9DF9?style=flat-square)](https://biomejs.dev/) [![License: CC BY‑NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey?style=flat-square)](https://creativecommons.org/licenses/by-nc/4.0/) [![Stars](https://img.shields.io/github/stars/chirag127/TimeGuard-Office-Time-Tracker-PWA?style=flat-square)](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA/stargazers)
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification/ci.yml?branch=main&style=flat-square)](https://github.com/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification/actions/workflows/ci.yml)
-[![Documentation Status](https://img.shields.io/badge/documentation-complete-brightgreen?style=flat-square)](https://github.com/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification#project-overview)
-[![Architecture](https://img.shields.io/badge/architecture-PWA--Microfrontend-blue?style=flat-square)](https://github.com/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification#architectural-design)
-[![License](https://img.shields.io/badge/license-CC_BY--NC_4.0-blue.svg?style=flat-square)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification?style=flat-square&cacheSeconds=2592000)](https://github.com/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification/stargazers)
+[⭐ Star this repo](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA)
 
-**Star ⭐ this Repo**
+---
 
-## 📝 Project Overview
+## Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Scripts](#scripts)
+- [Development Standards](#development-standards)
+- [AI Agent Directives](#ai-agent-directives)
+- [Contributing](#contributing)
+- [License](#license)
 
-This repository provides the comprehensive technical and architectural specification for the **OfficeTime Workforce Tracker Progressive Web Application (PWA)**. It details the system design, feature set, user experience (UX) flows, and deployment strategies necessary to build an efficient, scalable, and resilient time management solution.
+---
 
-Designed as a blueprint for development teams, this specification serves as the single source of truth for the PWA's structure, functionality, and underlying technological decisions. It ensures alignment across design, development, and operations teams, outlining a robust foundation for a modern web application.
+## Overview
+**BLUF**: TimeGuard empowers offices to accurately record work hours offline and sync in real‑time, providing managers with instant reporting dashboards. Built as a Progressive Web App with optional Tauri desktop capabilities, it ensures seamless cross‑platform availability.
 
-## 🏗️ Architectural Design
+---
 
-The OfficeTime PWA is architected to be highly scalable, maintainable, and user-centric, leveraging a Micro-Frontend approach on the client-side and a Serverless Event-Driven backend. Below is a high-level overview:
-
+## Architecture
 mermaid
-graph TD
-    A[User/Client] -->|Accesses PWA via Browser| B(OfficeTime PWA Frontend)
-    B -->|API Requests| C(API Gateway)
-    C -->|Invokes Lambda/Cloud Functions| D(Serverless Backend Services)
-    D -->|Data Operations| E(Polyglot Persistence Layer)
-    E -->|Relational Data| F[PostgreSQL/Aurora]
-    E -->|NoSQL Data| G[DynamoDB/Firestore]
-    D -->|Event Stream| H(Message Queue/Event Bus)
-    H -->|Triggers Background Processes| I(Background Workers/Jobs)
-    B -- Web Push API --> J(Push Notification Service)
-    B -- Offline Capabilities --> K(Service Worker & IndexedDB)
-
-    subgraph Frontend (Micro-Frontend Architecture)
-        B1(Core Shell) -- Loads --> B2(Time Tracking Micro-App)
-        B1 -- Loads --> B3(Reporting Micro-App)
-        B1 -- Loads --> B4(Admin Micro-App)
-    end
-
-    subgraph Backend (Serverless Event-Driven Architecture)
-        D1(User Auth Service)
-        D2(Time Entry Service)
-        D3(Report Generation Service)
-        D4(Notification Service)
-        D --> D1
-        D --> D2
-        D --> D3
-        D --> D4
-    end
+graph LR
+    subgraph Frontend["Frontend (PWA)"
+        UI["UI (TypeScript + Tailwind)" ] --> ServiceWorker["Service Worker (offline & sync)" ]
+        UI --> Store["State Store (Pinia/Redux)"
+    ]
+    subgraph Backend["Backend (Tauri)"
+        API["API Layer (Vite + Tauri)" ] --> DB[("IndexedDB / SQLite")]
+        API --> Sync["Sync Service (WebSocket)"
+    ]
+    Frontend --> API
+    API --> DB
+    API --> Sync
 
 
-## 📋 Table of Contents
+---
 
-*   [📝 Project Overview](#-project-overview)
-*   [🏗️ Architectural Design](#%EF%B8%8F-architectural-design)
-*   [📋 Table of Contents](#-table-of-contents)
-*   [✨ Key Features of OfficeTime PWA](#-key-features-of-officetime-pwa)
-*   [📂 Repository Structure](#-repository-structure)
-*   [🚀 Getting Started (Specification Contribution)](#-getting-started-specification-contribution)
-    *   [Prerequisites](#prerequisites)
-    *   [Cloning the Repository](#cloning-the-repository)
-    *   [Installing Documentation Tools](#installing-documentation-tools)
-    *   [Linting and Formatting](#linting-and-formatting)
-*   [🛠️ Available Scripts (Documentation)](#%EF%B8%8F-available-scripts-documentation)
-*   [💡 Design Principles](#-design-principles)
-*   [🤝 Contributing](#-contributing)
-*   [🛡️ Security](#-security)
-*   [📄 License](#-license)
-*   [🤖 AI Agent Directives](#-ai-agent-directives)
-
-## ✨ Key Features of OfficeTime PWA
-
-Based on this specification, the OfficeTime PWA will deliver the following core functionalities:
-
-*   **Intuitive Time Tracking:** Easy start/stop timers, manual entry, and project/task assignment.
-*   **Offline Mode:** Seamless operation and data synchronization even without an internet connection.
-*   **Real-time Reporting:** Dashboards and customizable reports on workforce productivity and project progress.
-*   **User & Role Management:** Granular control over user permissions and access levels.
-*   **Notifications:** Push notifications for reminders, approvals, and status updates.
-*   **Progressive Enhancements:** Installability (Add to Home Screen), deep linking, and background sync.
-*   **API-First Design:** Robust RESTful or GraphQL APIs for third-party integrations.
-
-## 📂 Repository Structure
-
-The specification documents are organized logically to provide clear navigation through various aspects of the PWA.
-
-text
-.github/
-├── workflows/           # GitHub Actions for CI/CD (e.g., documentation linting)
-├── CONTRIBUTING.md      # Guidelines for contributing to the specification
-├── ISSUE_TEMPLATE/      # Templates for bug reports and feature requests related to the spec
-├── PULL_REQUEST_TEMPLATE.md # Template for PRs to the spec
-└── SECURITY.md          # Security guidelines for the specification itself
-LICENSE                  # Project license
-PROPOSED_README.md       # This proposed README file
-README.md                # Main project README
-AGENTS.md                # AI Agent Directives
-badges.yml               # Configuration for repository badges
-package.json             # For documentation tooling (e.g., markdownlint, prettier)
-.gitignore               # Files/directories to ignore
-
-specifications/
-├── 01-frontend-architecture/
-│   ├── pwa-core-shell.md
-│   ├── micro-frontends.md
-│   └── state-management.md
-├── 02-backend-services/
-│   ├── api-design.md
-│   ├── serverless-functions.md
-│   └── event-driven-patterns.md
-├── 03-database-design/
-│   ├── polyglot-strategy.md
-│   ├── postgresql-schema.md
-│   └── dynamodb-models.md
-├── 04-ux-design/
-│   ├── user-flows.md
-│   └── accessibility-guidelines.md
-├── 05-devops-deployment/
-│   ├── ci-cd-pipelines.md
-│   └── hosting-strategies.md
-├── 06-security-compliance/
-│   ├── authentication-authorization.md
-│   └── data-encryption.md
-└── README.md            # Overview of specification documents
-
-
-## 🚀 Getting Started (Specification Contribution)
-
-To contribute to or review this PWA specification, follow these steps.
-
-### Prerequisites
-
-Ensure you have the following installed:
-*   Git
-*   Node.js (for documentation tooling)
-*   npm or yarn (for documentation tooling)
-
-### Cloning the Repository
-
+## Installation
 bash
-git clone https://github.com/chirag127/OfficeTime-Workforce-Tracker-PWA-Specification.git
-cd OfficeTime-Workforce-Tracker-PWA-Specification
+# Clone the repository
+git clone https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA.git
+cd TimeGuard-Office-Time-Tracker-PWA
+
+# Install dependencies (uses npm; pnpm or yarn are also supported)
+npm ci
 
 
-### Installing Documentation Tools
+---
 
-Install the necessary development dependencies for linting and formatting markdown files:
+## Scripts
+| Script | Description |
+|--------|-------------|
+| `dev` | Run the PWA in development mode with hot‑reloading |
+| `build` | Produce a production‑ready bundle (PWA & Tauri) |
+| `lint` | Run Biome linting and automatic fixes |
+| `test` | Execute Vitest unit tests with coverage |
+| `e2e` | Run Playwright end‑to‑end tests |
+| `preview` | Preview the built PWA locally |
 
-bash
-npm install
-# or
-yarn install
+---
 
+## Development Standards
+- **SOLID**: Enforce single‑responsibility and interface segregation throughout the codebase.
+- **DRY**: Reuse components and utilities; Biome will flag duplicated logic.
+- **YAGNI**: Implement only what is needed for the MVP; avoid premature abstractions.
+- **Feature‑Sliced Design (FSD)**: Organize code by feature domains (`src/features/<feature>/`).
+- **Continuous Integration**: Every PR must pass lint, unit, and e2e pipelines before merge.
 
-### Linting and Formatting
+---
 
-To ensure consistency and quality of the specification documents, run the linting and formatting scripts:
-
-bash
-npm run lint:docs
-npm run format:docs
-
-
-## 🛠️ Available Scripts (Documentation)
-
-| Script              | Description                                        |
-| :------------------ | :------------------------------------------------- |
-| `npm install`       | Installs all project dependencies for documentation tools. |
-| `npm run lint:docs` | Lints all Markdown files for style and consistency. |
-| `npm run format:docs` | Formats all Markdown files using Prettier.         |
-| `npm run build:docs`| (Placeholder) Builds static documentation site if applicable. |
-| `npm test`          | (Placeholder) Runs link checks or validation for documents. |
-
-## 💡 Design Principles
-
-The OfficeTime PWA specification adheres to the following core design principles:
-
-*   **PWA First:** Prioritize progressive web app capabilities, including offline support, installability, and responsive design.
-*   **Modularity (Micro-Frontends & Serverless):** Design for independent deployability and scalability of features.
-*   **API-First:** Develop with clear, documented API contracts to facilitate decoupled development and integration.
-*   **Security by Design:** Embed security considerations from the initial design phase, covering authentication, authorization, and data protection.
-*   **User-Centric UX:** Focus on intuitive interfaces and efficient workflows for enhanced user experience.
-*   **Observability:** Integrate logging, monitoring, and tracing mechanisms for comprehensive system visibility.
-
-## 🤝 Contributing
-
-We welcome contributions to enhance and refine this PWA specification. Please refer to our [Contributing Guidelines](.github/CONTRIBUTING.md) for detailed instructions on how to propose changes, report issues, and engage with the project.
-
-## 🛡️ Security
-
-Security is paramount. All architectural decisions and feature implementations outlined in this specification prioritize robust security practices. For details on reporting vulnerabilities related to this specification or its intended implementation, please review our [Security Policy](.github/SECURITY.md).
-
-## 📄 License
-
-This PWA specification is released under the [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](LICENSE) License. See the [LICENSE](LICENSE) file for more details.
-
-## 🤖 AI Agent Directives
-
+## AI Agent Directives
 <details>
-<summary><b>SYSTEM: APEX TECHNICAL AUTHORITY & ELITE ARCHITECT (DECEMBER 2025 EDITION)</b></summary>
+<summary>Click to expand AI Agent Directives</summary>
 
-### 1. IDENTITY & PRIME DIRECTIVE
-**Role:** You are a Senior Principal Software Architect and Master Technical Copywriter with **40+ years of elite industry experience**. You operate with absolute precision, enforcing FAANG-level standards and the wisdom of "Managing the Unmanageable."
-**Context:** Current Date is **December 2025**. You are building for the 2026 standard.
-**Output Standard:** Deliver **EXECUTION-ONLY** results. No plans, no "reporting"—only executed code, updated docs, and applied fixes.
-**Philosophy:** "Zero-Defect, High-Velocity, Future-Proof."
+markdown
+# SYSTEM: APEX TECHNICAL AUTHORITY & PRINCIPAL AI ARCHITECT (DECEMBER 2025 EDITION)
 
----
+## 1. IDENTITY & PRIME DIRECTIVE
+- **Product**: TimeGuard Office Time Tracker PWA
+- **Goal**: Deliver a zero‑defect, high‑velocity, future‑proof time‑tracking solution with offline‑first capabilities.
+- **Philosophy**: Zero‑Defect, High‑Velocity, Future‑Proof, AI‑Native.
 
-### 2. INPUT PROCESSING & COGNITION
-*   **SPEECH-TO-TEXT INTERPRETATION PROTOCOL:**
-    *   **Context:** User inputs may contain phonetic errors (homophones, typos).
-    *   **Semantic Correction:** **STRICTLY FORBIDDEN** from executing literal typos. You must **INFER** technical intent based on the project context.
-    *   **Logic Anchor:** Treat the `README.md` as the **Single Source of Truth (SSOT)**.
-*   **MANDATORY MCP INSTRUMENTATION:**
-    *   **No Guessing:** Do not hallucinate APIs.
-    *   **Research First:** Use `linkup`/`brave` to search for **December 2025 Industry Standards**, **Security Threats**, and **2026 UI Trends** relevant to PWA architecture and documentation.
-    *   **Validation:** Use `docfork` to verify *every* external API signature or referenced architectural pattern.
-    *   **Reasoning:** Engage `clear-thought-two` to architect complex flows *before* writing code or refining specifications.
+## 2. TECH STACK DEFINITION
+- **Language**: TypeScript (strict mode)
+- **Build Tool**: Vite
+- **UI Framework**: TailwindCSS (utility‑first styling)
+- **Desktop Wrapper**: Tauri (provides native bridges & offline support)
+- **Lint/Format**: Biome (fast, opinionated, auto‑fix)
+- **Unit Testing**: Vitest (Jest‑compatible, native ESM)
+- **E2E Testing**: Playwright (cross‑browser automation)
+- **Package Manager**: npm (lockfile `package-lock.json`)
+- **CI/CD**: GitHub Actions (workflow `ci.yml`)
 
----
+## 3. ARCHITECTURAL PATTERNS
+- **Feature‑Sliced Design (FSD)** – modular feature domains under `src/features/`.
+- **SOLID** – enforce single‑responsibility, open‑closed, Liskov substitution, interface segregation, and dependency inversion.
+- **DRY & YAGNI** – Biome will surface duplicated code; only implement needed features.
 
-### 3. CONTEXT-AWARE APEX TECH STACKS (LATE 2025 STANDARDS)
-**Directives:** This repository, `OfficeTime-Workforce-Tracker-PWA-Specification`, serves as a comprehensive *architectural and technical specification document* for a Progressive Web Application. The directives below cover the tooling for managing *this documentation repository* and the core technologies for the *PWA it describes*.
+## 4. VERIFICATION COMMANDS
+bash
+# Lint & auto‑format
+npm run lint
 
-*   **PRIMARY SCENARIO: DOCUMENTATION / ARCHITECTURE SPECIFICATION (Repository Management)**
-    *   **Stack:** This repository primarily utilizes **Markdown** for content, **Mermaid.js** for embedded diagrams, and potentially **JSON Schema** for API specifications. Emphasis is on clear, precise, and maintainable architectural documentation.
-    *   **Tooling:**
-        *   **Linting/Formatting:** **markdownlint** (for Markdown style/consistency), **Vale** (for prose linting and grammatical checks), and **Prettier** (for formatting code blocks within documents).
-        *   **Dependency Management (for tooling):** **npm** or **yarn** via `package.json`.
-    *   **Architectural Focus (for the documentation itself):** Maintain a clear, modular structure for the specification documents, ensuring easy navigation and traceability of design decisions.
+# Unit tests with coverage
+npm run test
 
-*   **SECONDARY SCENARIO A: WEB / APP / PWA (Technologies Described in Specification)**
-    *   **Focus:** This section outlines the recommended technology stack for the **OfficeTime Workforce Tracker PWA** as detailed within this specification, not the repository's direct build stack.
-    *   **Frontend Stack:** **TypeScript 6.x** (Strict Mode), **Vite 7** (with Rolldown), **TailwindCSS v4**, and **React 19** (leveraging Signals for state management).
-    *   **PWA Specifics:** Full implementation of **Service Workers** for offline capabilities, **Web Manifest** for installability, and **Web Push API** for notifications.
-    *   **Backend Stack:** **Serverless Architecture** (e.g., AWS Lambda, Google Cloud Functions), **API Gateway** (RESTful or GraphQL), and **Polyglot Persistence** (e.g., PostgreSQL/Aurora for relational data, DynamoDB/Firestore for NoSQL).
-    *   **Testing Strategy:** **Vitest** for unit and integration testing of frontend components, **Playwright** for end-to-end PWA testing, and **Serverless-offline** for local backend testing.
-    *   **Architecture (for the described PWA):** **Feature-Sliced Design (FSD)** for the frontend, ensuring modularity, clear dependency flow, and scalability. **Event-Driven Architecture** for backend services to promote decoupling and responsiveness.
+# End‑to‑end tests
+npm run e2e
+
+# Build production artifact
+npm run build
+
+# Run locally (development server)
+npm run dev
+
+
+## 5. OPERATIONAL GUIDELINES
+- Run `npm audit` weekly and remediate vulnerabilities.
+- Keep dependencies fresh with `npm outdated` + `npm update`.
+- CI must succeed on every push; failures block merging.
+- Use the provided `CEREBRAS_API_KEY` environment variable for any AI‑assisted tooling.
+
 
 </details>
+
+---
+
+## Contributing
+We welcome contributions! Please read our [CONTRIBUTING.md](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA/blob/main/CONTRIBUTING.md) for guidelines on how to propose changes, report bugs, and submit pull requests.
+
+---
+
+## License
+This project is licensed under the **Creative Commons Attribution‑NonCommercial 4.0 International (CC BY‑NC 4.0)**. See the [LICENSE](https://github.com/chirag127/TimeGuard-Office-Time-Tracker-PWA/blob/main/LICENSE) file for details.
